@@ -17,7 +17,32 @@
    margin: 0 auto;
  `;
  
- const NavLink = styled.div``;
+ const Header = styled.header`
+  display: flex;
+  background: black;
+  height: 66px;
+  padding: 0 16px;
+  box-sizing: border-box;
+`;
+
+const NavLinks = styled.div`
+  margin-left: auto;
+  display: flex;
+`;
+
+const NavLink = styled.div`
+  margin: auto 0;
+  a {
+    color: white;
+    padding: 0 16px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    &:hover {
+      color: orange;
+    }
+  }
+`; 
  
  const navigationQuery = graphql`
  {
@@ -44,30 +69,33 @@
  
  const Layout = ({ children }) => {
  
-   return (
-     <>
-       <StaticQuery 
-         query={`${navigationQuery}`} 
-         render={(data) => {
-           const node = data.prismic.allNavigations.edges[0].node;
-           
-           return (
-             <div>
-               {node.navigation_links.map((item, idx) => {
-                 console.log(item);
-                 return (
-                   <NavLink key={idx}>
-                     <Link to={`/${item.link._meta.uid}`}>{item.label}</Link>
-                   </NavLink>
-                 )
-               })}
-             </div>
-           )
-         }} 
-       />
-       <Main>{children}</Main>
-     </>
-   )
+  return (
+    <>
+      <Header>
+        <NavLinks>
+          <StaticQuery 
+            query={`${navigationQuery}`} 
+            render={(data) => {
+              const node = data.prismic.allNavigations.edges[0].node;
+              
+              return (
+                <>
+                  {node.navigation_links.map((item, idx) => {
+                    return (
+                      <NavLink key={idx}>
+                        <Link to={`/${item.link._meta.uid}`}>{item.label}</Link>
+                      </NavLink>
+                    )
+                  })}
+                </>
+              )
+            }} 
+          />
+        </NavLinks>
+      </Header>
+      <Main>{children}</Main>
+    </>
+  )  
  }
  
  Layout.propTypes = {
